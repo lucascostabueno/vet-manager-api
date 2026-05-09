@@ -3,9 +3,9 @@ services:
     image: postgres:17-alpine
     container_name: vet-manager-db
     environment:
-      POSTGRES_DB: vet_manager_db
-      POSTGRES_USER: lucas_dev
-      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
