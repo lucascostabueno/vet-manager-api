@@ -44,7 +44,9 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<EmployeeResponse>> search(@ParameterObject EmployeeSearchFilter filter, @ParameterObject Pageable pageable) {
+    public ResponseEntity<Page<EmployeeResponse>> search(
+            @ParameterObject EmployeeSearchFilter filter,
+            @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(service.search(filter, pageable));
     }
 
