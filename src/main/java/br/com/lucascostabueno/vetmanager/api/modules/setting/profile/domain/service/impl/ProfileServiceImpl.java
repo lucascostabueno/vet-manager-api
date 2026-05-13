@@ -28,7 +28,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Employee not found."));
+                .orElseThrow(() -> new RuntimeException("Profile not found."));
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public ProfileResponse update(UUID id, ProfileUpdateRequest request) {
         var employee = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found."));
+                .orElseThrow(() -> new RuntimeException("Profile not found."));
 
         mapper.updateEntityFromDto(request, employee);
         return mapper.toResponse(repository.save(employee));
