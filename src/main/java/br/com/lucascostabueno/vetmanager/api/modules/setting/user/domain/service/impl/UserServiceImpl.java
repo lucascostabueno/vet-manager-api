@@ -5,6 +5,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dt
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserSearchFilter;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserUpdateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.mapper.UserMapper;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.repository.UserRepository;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.service.UserService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.infrastructure.persistence.specification.UserSpecs;
@@ -27,6 +28,13 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserResponse findById(UUID id) {
         return repository.findById(id)
+                .map(mapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("User not found."));
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse findByUsername(String username) {
+        return repository.findByUsername(username)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("User not found."));
     }
