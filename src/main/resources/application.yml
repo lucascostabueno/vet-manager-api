@@ -5,6 +5,12 @@ spring:
   profiles:
     active: dev
 
+  jwt:
+    public:
+      key: ${JWT_PUBLIC_KEY_PATH}
+    private:
+      key: ${JWT_PRIVATE_KEY_PATH}
+
   jpa:
     show-sql: true
     properties:
