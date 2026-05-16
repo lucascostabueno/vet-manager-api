@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/profiles")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
