@@ -5,6 +5,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dt
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserSearchFilter;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserUpdateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -17,8 +18,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/users")
+@Tag(name = "Users", description = "Endpoints for managing system users")
 public class UserController {
 
     private final UserServiceImpl service;

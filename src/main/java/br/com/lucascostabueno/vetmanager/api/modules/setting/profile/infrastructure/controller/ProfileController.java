@@ -5,6 +5,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileSearchFilter;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileUpdateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.impl.ProfileServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -17,8 +18,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/profiles")
+@Tag(name = "Profiles", description = "Endpoints for managing user access profiles and permissions")
 public class ProfileController {
 
     private final ProfileServiceImpl service;

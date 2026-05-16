@@ -5,6 +5,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.registration.employee.appli
 import br.com.lucascostabueno.vetmanager.api.modules.registration.employee.application.dto.EmployeeSearchFilter;
 import br.com.lucascostabueno.vetmanager.api.modules.registration.employee.application.dto.EmployeeUpdateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.registration.employee.domain.service.impl.EmployeeServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -17,8 +18,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/employees")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/employees")
+@Tag(name = "Employees", description = "Endpoints for managing employees")
 public class EmployeeController {
 
     private final EmployeeServiceImpl service;
