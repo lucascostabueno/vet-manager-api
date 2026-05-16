@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,10 +15,11 @@ import java.time.Instant;
 public class TokenService {
 
     private final JwtEncoder encoder;
+    private final TokenSettings tokenSettings;
 
     public String generateToken(User user) {
         var now = Instant.now();
-        var expiresIn = 3600L; // 1 hora
+        var expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
 
         var claims = JwtClaimsSet.builder()
                 .issuer("vet-manager-api")

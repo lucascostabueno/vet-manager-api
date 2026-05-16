@@ -31,10 +31,10 @@ import java.time.Duration;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${jwt.public.key}")
+    @Value("${vet.security.jwt.public-key}")
     private RSAPublicKey publicKey;
 
-    @Value("${jwt.private.key}")
+    @Value("${vet.security.jwt.private-key}")
     private RSAPrivateKey privateKey;
 
     @Bean
