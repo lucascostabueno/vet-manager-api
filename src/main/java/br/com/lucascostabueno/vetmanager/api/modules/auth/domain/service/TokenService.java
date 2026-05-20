@@ -18,13 +18,13 @@ public class TokenService {
     private final TokenSettings tokenSettings;
 
     public String generateToken(User user) {
-        var now = Instant.now();
-        var expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
+        Instant now = Instant.now();
+        Instant expiresAt = now.plus(tokenSettings.getAccessTokenTimeToLive());
 
         var claims = JwtClaimsSet.builder()
                 .issuer("vet-manager-api")
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(expiresIn))
+                .expiresAt(expiresAt)
                 .subject(user.getId().toString())
                 .claim("username", user.getUsername())
                 .build();

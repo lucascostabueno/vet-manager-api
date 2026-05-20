@@ -20,16 +20,9 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(User user) {
 
         Instant now = Instant.now();
+        Instant expiresAt = now.plus(tokenSettings.getRefreshTokenTimeToLive());
 
-        Instant expiresAt = now.plus(
-                tokenSettings.getRefreshTokenTimeToLive()
-        );
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
-                .token(UUID.randomUUID().toString())
-                .expiresAt(expiresAt)
-                .build();
+        RefreshToken refreshToken = new RefreshToken(user, UUID.randomUUID().toString(), expiresAt);
 
         return refreshTokenRepository.save(refreshToken);
     }
