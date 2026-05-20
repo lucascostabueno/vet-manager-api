@@ -2,6 +2,7 @@ package br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.useca
 
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginResponse;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.TokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ public class AuthenticateUserUseCase {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final TokenSettings tokenSettings;
+    private final RefreshTokenService refreshTokenService;
 
-    public LoginResponse execute(LoginRequest request) {
+    public LoginResponse authenticate(LoginRequest request) {
         var user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
 
@@ -27,9 +29,14 @@ public class AuthenticateUserUseCase {
             throw new BadCredentialsException("Invalid username or password");
         }
 
+        var refreshToken = refreshTokenService.createRefreshToken(user);
         var token = tokenService.generateToken(user);
         var expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
 
-        return new LoginResponse(token, expiresIn);
+        return LoginResponse.builder()
+                .accessToken(token)
+                .expiresIn(expiresIn)
+                .refreshToken(refreshToken.getToken())
+                .build();
     }
 }

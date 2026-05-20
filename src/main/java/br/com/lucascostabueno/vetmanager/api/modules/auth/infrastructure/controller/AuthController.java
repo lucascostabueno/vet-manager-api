@@ -4,6 +4,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginR
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginResponse;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.usecase.AuthenticateUserUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,8 @@ public class AuthController {
     private final AuthenticateUserUseCase authenticateUserUseCase;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse response = authenticateUserUseCase.execute(request);
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authenticateUserUseCase.authenticate(request);
         return ResponseEntity.ok(response);
     }
 }

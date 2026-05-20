@@ -12,6 +12,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.user.infrastructure
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,50 +22,52 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final UserMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
     public UserResponse findById(UUID id) {
-        return repository.findById(id)
-                .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("User not found."));
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponse findByUsername(String username) {
-        return repository.findByUsername(username)
+        return userRepository.findById(id)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("User not found."));
     }
 
     @Transactional
     public UserResponse create(UserCreateRequest request) {
-        var employee = mapper.toEntity(request);
-        return mapper.toResponse(repository.save(employee));
+        User user = mapper.toEntity(request);
+        String hashedPassword = passwordEncoder.encode(request.password());
+        user.setPassword(hashedPassword);
+        return mapper.toResponse(userRepository.save(user));
     }
 
     @Transactional
     public UserResponse update(UUID id, UserUpdateRequest request) {
-        var employee = repository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found."));
 
-        mapper.updateEntityFromDto(request, employee);
-        return mapper.toResponse(repository.save(employee));
+        mapper.updateEntityFromDto(request, user);
+
+        if (request.password() != null && !request.password().isBlank()) {
+            String hashedPassword = passwordEncoder.encode(request.password());
+            user.setPassword(passwordEncoder.encode(hashedPassword));
+        }
+
+        return mapper.toResponse(userRepository.save(user));
     }
 
     @Transactional(readOnly = true)
     public Page<UserResponse> search(UserSearchFilter filter, Pageable pageable) {
-        return repository.findAll(UserSpecs.byFilter(filter), pageable)
+        return userRepository.findAll(UserSpecs.byFilter(filter), pageable)
                 .map(mapper::toResponse);
     }
 
     @Transactional
     public void delete(UUID id) {
-        if (!repository.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new RuntimeException("Invalid ID.");
         }
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
 }
