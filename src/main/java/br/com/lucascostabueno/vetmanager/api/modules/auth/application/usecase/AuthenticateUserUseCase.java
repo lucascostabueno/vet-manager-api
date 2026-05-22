@@ -1,4 +1,4 @@
-package br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.usecase;
+package br.com.lucascostabueno.vetmanager.api.modules.auth.application.usecase;
 
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginResponse;
@@ -11,6 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class AuthenticateUserUseCase {
     private final TokenSettings tokenSettings;
     private final RefreshTokenService refreshTokenService;
 
+    @Transactional
     public LoginResponse authenticate(LoginRequest request) {
         var user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
