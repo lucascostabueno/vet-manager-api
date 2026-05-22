@@ -2,7 +2,9 @@ package br.com.lucascostabueno.vetmanager.api.modules.auth.infrastructure.contro
 
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginResponse;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.RefreshTokenRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.usecase.AuthenticateUserUseCase;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticateUserUseCase authenticateUserUseCase;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse response = authenticateUserUseCase.authenticate(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authenticateUserUseCase.authenticate(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(refreshTokenService.refresh(request));
     }
 }

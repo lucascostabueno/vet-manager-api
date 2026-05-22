@@ -9,9 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "refresh_tokens")
 public class RefreshToken {
 
@@ -20,8 +18,8 @@ public class RefreshToken {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "token", nullable = false, unique = true)
@@ -33,9 +31,17 @@ public class RefreshToken {
     @Column(name = "revoked", nullable = false)
     private Boolean revoked = Boolean.FALSE;
 
-    public RefreshToken(User user, String token, Instant expiresAt) {
+    public RefreshToken(User user, Instant expiresAt) {
         this.user = user;
-        this.token = token;
+        this.token = UUID.randomUUID().toString();
         this.expiresAt = expiresAt;
+    }
+
+    public void revoke() {
+        this.revoked = Boolean.TRUE;
+    }
+
+    public boolean isExpired() {
+        return expiresAt.isBefore(Instant.now());
     }
 }

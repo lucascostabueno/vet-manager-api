@@ -2,6 +2,7 @@ package br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.useca
 
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginResponse;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshToken;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.TokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.repository.UserRepository;
@@ -29,9 +30,9 @@ public class AuthenticateUserUseCase {
             throw new BadCredentialsException("Invalid username or password");
         }
 
-        var refreshToken = refreshTokenService.createRefreshToken(user);
-        var token = tokenService.generateToken(user);
-        var expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+        String token = tokenService.generateToken(user);
+        Long expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
 
         return LoginResponse.builder()
                 .accessToken(token)
