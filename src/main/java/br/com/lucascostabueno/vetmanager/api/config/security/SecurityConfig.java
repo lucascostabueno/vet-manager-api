@@ -75,8 +75,8 @@ public class SecurityConfig {
     public TokenSettings tokenSettings() {
         return TokenSettings.builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                .accessTokenTimeToLive(Duration.ofMinutes(60))
-                .refreshTokenTimeToLive(Duration.ofMinutes(90))
+                .accessTokenTimeToLive(Duration.ofMinutes(15))
+                .refreshTokenTimeToLive(Duration.ofDays(7))
                 .build();
     }
 }
