@@ -6,7 +6,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.Refres
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshToken;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.repository.RefreshTokenRepository;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
-import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.TokenService;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.AccessTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,7 +27,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenSettings tokenSettings;
-    private final TokenService tokenService;
+    private final AccessTokenService accessTokenService;
 
     @Override
     public RefreshToken createRefreshToken(User user) {
@@ -47,7 +47,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshToken.revoke();
 
         RefreshToken newRefreshToken = createRefreshToken(refreshToken.getUser());
-        String accessToken = tokenService.generateToken(refreshToken.getUser());
+        String accessToken = accessTokenService.generateAccessToken(refreshToken.getUser());
         Long expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
 
         return LoginResponse.builder()
