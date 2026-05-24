@@ -3,15 +3,17 @@ package br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.impl;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LoginResponse;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.LogoutRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.application.dto.RefreshTokenRequest;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.application.factory.LoginResponseFactory;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshToken;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.repository.RefreshTokenRepository;
-import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.AccessTokenService;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenSettings tokenSettings;
     private final AccessTokenService accessTokenService;
+    private final LoginResponseFactory loginResponseFactory;
 
     @Override
     public RefreshToken createRefreshToken(User user) {
@@ -48,13 +51,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         RefreshToken newRefreshToken = createRefreshToken(refreshToken.getUser());
         String accessToken = accessTokenService.generateAccessToken(refreshToken.getUser());
-        Long expiresIn = tokenSettings.getAccessTokenTimeToLive().toSeconds();
 
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(newRefreshToken.getToken())
-                .expiresIn(expiresIn)
-                .build();
+        return loginResponseFactory.toLoginResponse(accessToken, newRefreshToken);
     }
 
     private void validateRefreshToken(RefreshToken refreshToken) {
@@ -69,24 +67,23 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    public void revokeAllUserTokens(User user) {
+        List<RefreshToken> activeTokens = refreshTokenRepository.findAllByUserAndRevokedFalse(user);
+        activeTokens.forEach(RefreshToken::revoke);
+    }
+
+    @Override
     @Transactional
     public void logout(LogoutRequest request) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
                 .orElseThrow(() -> new BadCredentialsException("Invalid refresh token."));
 
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!refreshToken.getUser().getId().equals(UUID.fromString(authentication.getName()))) {
             throw new AccessDeniedException("You do not have permission to revoke this token.");
         }
 
         refreshToken.revoke();
-    }
-
-    @Override
-    @Transactional
-    public void revokeAllUserTokens(User user) {
-        List<RefreshToken> activeTokens = refreshTokenRepository.findAllByUserAndRevokedFalse(user);
-        activeTokens.forEach(RefreshToken::revoke);
     }
 }
