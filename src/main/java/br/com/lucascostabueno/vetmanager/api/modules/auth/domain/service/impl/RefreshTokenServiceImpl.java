@@ -8,6 +8,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshTo
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.repository.RefreshTokenRepository;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.AccessTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
+import br.com.lucascostabueno.vetmanager.api.modules.auth.infrastructure.security.AuthenticatedUser;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,9 +80,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
                 .orElseThrow(() -> new BadCredentialsException("Invalid refresh token."));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JwtAuthenticationToken authentication =
+                (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
-        if (!refreshToken.getUser().getId().equals(UUID.fromString(authentication.getName()))) {
+        UUID authenticatedUserId = UUID.fromString(authentication.getToken().getSubject());
+
+        if (!refreshToken.getUser().getId().equals(authenticatedUserId)) {
             throw new AccessDeniedException("You do not have permission to revoke this token.");
         }
 
