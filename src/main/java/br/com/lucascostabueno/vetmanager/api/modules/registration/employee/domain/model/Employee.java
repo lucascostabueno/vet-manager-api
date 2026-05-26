@@ -16,17 +16,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Employee {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-    @Column(name = "cpf", nullable = false, unique = true, length = 11)
-    private String cpf;
+  @Column(name = "cpf", nullable = false, unique = true, length = 11)
+  private String cpf;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+  @Column(name = "email", nullable = false, unique = true)
+  private String email;
 }

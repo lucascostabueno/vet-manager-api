@@ -20,55 +20,53 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeRepository repository;
-    private final EmployeeMapper mapper;
+  private final EmployeeRepository repository;
+  private final EmployeeMapper mapper;
 
-    @Override
-    @Transactional(readOnly = true)
-    public EmployeeResponse findById(UUID id) {
-        return repository.findById(id)
-                .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Employee not found."));
+  @Override
+  @Transactional(readOnly = true)
+  public EmployeeResponse findById(UUID id) {
+    return repository.findById(id).map(mapper::toResponse)
+        .orElseThrow(() -> new RuntimeException("Employee not found."));
+  }
+
+  @Transactional
+  public EmployeeResponse create(EmployeeCreateRequest request) {
+    if (repository.existsByCpf(request.cpf())) {
+      throw new RuntimeException("Conflict: CPF already registered.");
     }
-
-    @Transactional
-    public EmployeeResponse create(EmployeeCreateRequest request) {
-        if (repository.existsByCpf(request.cpf())) {
-            throw new RuntimeException("Conflict: CPF already registered.");
-        }
-        if (repository.existsByEmail(request.email())) {
-            throw new RuntimeException("Conflict: Email already registered.");
-        }
-        var employee = mapper.toEntity(request);
-        return mapper.toResponse(repository.save(employee));
+    if (repository.existsByEmail(request.email())) {
+      throw new RuntimeException("Conflict: Email already registered.");
     }
+    var employee = mapper.toEntity(request);
+    return mapper.toResponse(repository.save(employee));
+  }
 
-    @Transactional
-    public EmployeeResponse update(UUID id, EmployeeUpdateRequest request) {
-        if (repository.existsByCpf(request.cpf())) {
-            throw new RuntimeException("Conflict: CPF already registered.");
-        }
-        if (repository.existsByEmail(request.email())) {
-            throw new RuntimeException("Conflict: Email already registered.");
-        }
-        var employee = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found."));
-
-        mapper.updateEntityFromDto(request, employee);
-        return mapper.toResponse(repository.save(employee));
+  @Transactional
+  public EmployeeResponse update(UUID id, EmployeeUpdateRequest request) {
+    if (repository.existsByCpf(request.cpf())) {
+      throw new RuntimeException("Conflict: CPF already registered.");
     }
-
-    @Transactional(readOnly = true)
-    public Page<EmployeeResponse> search(EmployeeSearchFilter filter, Pageable pageable) {
-        return repository.findAll(EmployeeSpecs.byFilter(filter), pageable)
-                .map(mapper::toResponse);
+    if (repository.existsByEmail(request.email())) {
+      throw new RuntimeException("Conflict: Email already registered.");
     }
+    var employee =
+        repository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found."));
 
-    @Transactional
-    public void delete(UUID id) {
-        if (!repository.existsById(id)) {
-            throw new RuntimeException("Invalid ID.");
-        }
-        repository.deleteById(id);
+    mapper.updateEntityFromDto(request, employee);
+    return mapper.toResponse(repository.save(employee));
+  }
+
+  @Transactional(readOnly = true)
+  public Page<EmployeeResponse> search(EmployeeSearchFilter filter, Pageable pageable) {
+    return repository.findAll(EmployeeSpecs.byFilter(filter), pageable).map(mapper::toResponse);
+  }
+
+  @Transactional
+  public void delete(UUID id) {
+    if (!repository.existsById(id)) {
+      throw new RuntimeException("Invalid ID.");
     }
+    repository.deleteById(id);
+  }
 }

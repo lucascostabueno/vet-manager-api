@@ -2,10 +2,4 @@ package br.com.lucascostabueno.vetmanager.api.modules.registration.employee.appl
 
 import java.util.UUID;
 
-public record EmployeeSearchFilter(
-        UUID id,
-        String name,
-        String cpf,
-        String email
-) {
-}
+public record EmployeeSearchFilter(UUID id,String name,String cpf,String email){}

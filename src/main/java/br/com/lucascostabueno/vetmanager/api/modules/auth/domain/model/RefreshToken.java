@@ -13,35 +13,35 @@ import java.util.UUID;
 @Table(name = "refresh_tokens")
 public class RefreshToken {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @Column(name = "token", nullable = false, unique = true)
-    private String token;
+  @Column(name = "token", nullable = false, unique = true)
+  private String token;
 
-    @Column(name = "expires_at", nullable = false)
-    private Instant expiresAt;
+  @Column(name = "expires_at", nullable = false)
+  private Instant expiresAt;
 
-    @Column(name = "revoked", nullable = false)
-    private Boolean revoked = Boolean.FALSE;
+  @Column(name = "revoked", nullable = false)
+  private Boolean revoked = Boolean.FALSE;
 
-    public RefreshToken(User user, Instant expiresAt) {
-        this.user = user;
-        this.token = UUID.randomUUID().toString();
-        this.expiresAt = expiresAt;
-    }
+  public RefreshToken(User user, Instant expiresAt) {
+    this.user = user;
+    this.token = UUID.randomUUID().toString();
+    this.expiresAt = expiresAt;
+  }
 
-    public void revoke() {
-        this.revoked = Boolean.TRUE;
-    }
+  public void revoke() {
+    this.revoked = Boolean.TRUE;
+  }
 
-    public boolean isExpired() {
-        return expiresAt.isBefore(Instant.now());
-    }
+  public boolean isExpired() {
+    return expiresAt.isBefore(Instant.now());
+  }
 }

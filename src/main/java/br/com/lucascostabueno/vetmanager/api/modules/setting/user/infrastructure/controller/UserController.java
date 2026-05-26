@@ -23,38 +23,36 @@ import java.util.UUID;
 @Tag(name = "Users", description = "Endpoints for managing system users")
 public class UserController {
 
-    private final UserServiceImpl service;
+  private final UserServiceImpl service;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.findById(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
+    return ResponseEntity.ok(service.findById(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UserResponse> create(@RequestBody @Valid UserCreateRequest request) {
-        var response = service.create(request);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.id()).toUri();
-        return ResponseEntity.created(uri).body(response);
-    }
+  @PostMapping
+  public ResponseEntity<UserResponse> create(@RequestBody @Valid UserCreateRequest request) {
+    var response = service.create(request);
+    var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+        .buildAndExpand(response.id()).toUri();
+    return ResponseEntity.created(uri).body(response);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(
-            @PathVariable UUID id,
-            @RequestBody @Valid UserUpdateRequest request) {
-        return ResponseEntity.ok(service.update(id, request));
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UserResponse> update(@PathVariable UUID id,
+      @RequestBody @Valid UserUpdateRequest request) {
+    return ResponseEntity.ok(service.update(id, request));
+  }
 
-    @GetMapping
-    public ResponseEntity<Page<UserResponse>> search(
-            @ParameterObject UserSearchFilter filter,
-            @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(service.search(filter, pageable));
-    }
+  @GetMapping
+  public ResponseEntity<Page<UserResponse>> search(@ParameterObject UserSearchFilter filter,
+      @ParameterObject Pageable pageable) {
+    return ResponseEntity.ok(service.search(filter, pageable));
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    service.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

@@ -18,34 +18,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class AuthenticateUserUseCase {
-    private final AccessTokenService accessTokenService;
-    private final RefreshTokenService refreshTokenService;
-    private final LoginResponseFactory loginResponseFactory;
-    private final AuthenticationManager authenticationManager;
+  private final AccessTokenService accessTokenService;
+  private final RefreshTokenService refreshTokenService;
+  private final LoginResponseFactory loginResponseFactory;
+  private final AuthenticationManager authenticationManager;
 
-    @Transactional
-    public LoginResponse authenticate(LoginRequest request) {
-        Authentication authentication = authenticateCredentials(request);
-        User user = extractAuthenticatedUser(authentication);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-        String accessToken = accessTokenService.generateAccessToken(user);
+  @Transactional
+  public LoginResponse authenticate(LoginRequest request) {
+    Authentication authentication = authenticateCredentials(request);
+    User user = extractAuthenticatedUser(authentication);
+    RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+    String accessToken = accessTokenService.generateAccessToken(user);
 
-        return loginResponseFactory.toLoginResponse(accessToken, refreshToken);
-    }
+    return loginResponseFactory.toLoginResponse(accessToken, refreshToken);
+  }
 
-    private Authentication authenticateCredentials(LoginRequest request) {
-        UsernamePasswordAuthenticationToken authToken =
-                UsernamePasswordAuthenticationToken.unauthenticated(
-                        request.username(),
-                        request.password()
-                );
+  private Authentication authenticateCredentials(LoginRequest request) {
+    UsernamePasswordAuthenticationToken authToken =
+        UsernamePasswordAuthenticationToken.unauthenticated(request.username(), request.password());
 
-        return authenticationManager.authenticate(authToken);
-    }
+    return authenticationManager.authenticate(authToken);
+  }
 
-    private User extractAuthenticatedUser(Authentication authentication) {
-        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+  private User extractAuthenticatedUser(Authentication authentication) {
+    AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
 
-        return authenticatedUser.getUser();
-    }
+    return authenticatedUser.getUser();
+  }
 }

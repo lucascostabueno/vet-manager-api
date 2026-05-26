@@ -12,11 +12,11 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class RefreshTokenPurgeScheduler {
 
-    private final RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
 
-    @Scheduled(cron = "0 0 3 * * *")
-    @Transactional
-    public void purgeGarbageTokens() {
-        refreshTokenRepository.deleteByExpiresAtBeforeOrRevokedTrue(Instant.now());
-    }
+  @Scheduled(cron = "0 0 3 * * *")
+  @Transactional
+  public void purgeGarbageTokens() {
+    refreshTokenRepository.deleteByExpiresAtBeforeOrRevokedTrue(Instant.now());
+  }
 }

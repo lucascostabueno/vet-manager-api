@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface EmployeeService {
-    EmployeeResponse findById(UUID id);
+  EmployeeResponse findById(UUID id);
 
-    EmployeeResponse create(EmployeeCreateRequest request);
+  EmployeeResponse create(EmployeeCreateRequest request);
 
-    EmployeeResponse update(UUID id, EmployeeUpdateRequest request);
+  EmployeeResponse update(UUID id, EmployeeUpdateRequest request);
 
-    Page<EmployeeResponse> search(EmployeeSearchFilter filter, Pageable pageable);
+  Page<EmployeeResponse> search(EmployeeSearchFilter filter, Pageable pageable);
 
-    void delete(UUID id);
+  void delete(UUID id);
 }

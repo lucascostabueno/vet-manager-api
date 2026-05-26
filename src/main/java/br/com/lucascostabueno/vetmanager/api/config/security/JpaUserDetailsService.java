@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(AuthenticatedUser::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
-    }
+  @Override
+  public UserDetails loadUserByUsername(String username) {
+    return userRepository.findByUsername(username).map(AuthenticatedUser::new)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+  }
 }

@@ -13,13 +13,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
-    @Query("SELECT r FROM RefreshToken r WHERE r.token = :token")
-    Optional<RefreshToken> findByToken(@Param("token") String token);
+  @Query("SELECT r FROM RefreshToken r WHERE r.token = :token")
+  Optional<RefreshToken> findByToken(@Param("token") String token);
 
-    @Query("SELECT r FROM RefreshToken r WHERE r.user = :user AND r.revoked = false")
-    List<RefreshToken> findAllByUserAndRevokedFalse(@Param("user") User user);
+  @Query("SELECT r FROM RefreshToken r WHERE r.user = :user AND r.revoked = false")
+  List<RefreshToken> findAllByUserAndRevokedFalse(@Param("user") User user);
 
-    @Modifying
-    @Query("DELETE FROM RefreshToken r WHERE r.expiresAt < :now OR r.revoked = true")
-    void deleteByExpiresAtBeforeOrRevokedTrue(@Param("now") Instant now);
+  @Modifying
+  @Query("DELETE FROM RefreshToken r WHERE r.expiresAt < :now OR r.revoked = true")
+  void deleteByExpiresAtBeforeOrRevokedTrue(@Param("now") Instant now);
 }

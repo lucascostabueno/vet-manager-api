@@ -21,22 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication", description = "Endpoint for user authentication and token generation")
 public class AuthController {
 
-    private final AuthenticateUserUseCase authenticateUserUseCase;
-    private final RefreshTokenService refreshTokenService;
+  private final AuthenticateUserUseCase authenticateUserUseCase;
+  private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authenticateUserUseCase.authenticate(request));
-    }
+  @PostMapping("/login")
+  public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    return ResponseEntity.ok(authenticateUserUseCase.authenticate(request));
+  }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        return ResponseEntity.ok(refreshTokenService.refresh(request));
-    }
+  @PostMapping("/refresh")
+  public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+    return ResponseEntity.ok(refreshTokenService.refresh(request));
+  }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
-        refreshTokenService.logout(request);
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
+    refreshTokenService.logout(request);
+    return ResponseEntity.noContent().build();
+  }
 }

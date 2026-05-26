@@ -23,38 +23,36 @@ import java.util.UUID;
 @Tag(name = "Profiles", description = "Endpoints for managing user access profiles and permissions")
 public class ProfileController {
 
-    private final ProfileServiceImpl service;
+  private final ProfileServiceImpl service;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProfileResponse> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.findById(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<ProfileResponse> getById(@PathVariable UUID id) {
+    return ResponseEntity.ok(service.findById(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<ProfileResponse> create(@RequestBody @Valid ProfileCreateRequest request) {
-        var response = service.create(request);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.id()).toUri();
-        return ResponseEntity.created(uri).body(response);
-    }
+  @PostMapping
+  public ResponseEntity<ProfileResponse> create(@RequestBody @Valid ProfileCreateRequest request) {
+    var response = service.create(request);
+    var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+        .buildAndExpand(response.id()).toUri();
+    return ResponseEntity.created(uri).body(response);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProfileResponse> update(
-            @PathVariable UUID id,
-            @RequestBody @Valid ProfileUpdateRequest request) {
-        return ResponseEntity.ok(service.update(id, request));
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<ProfileResponse> update(@PathVariable UUID id,
+      @RequestBody @Valid ProfileUpdateRequest request) {
+    return ResponseEntity.ok(service.update(id, request));
+  }
 
-    @GetMapping
-    public ResponseEntity<Page<ProfileResponse>> search(
-            @ParameterObject ProfileSearchFilter filter,
-            @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(service.search(filter, pageable));
-    }
+  @GetMapping
+  public ResponseEntity<Page<ProfileResponse>> search(@ParameterObject ProfileSearchFilter filter,
+      @ParameterObject Pageable pageable) {
+    return ResponseEntity.ok(service.search(filter, pageable));
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    service.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

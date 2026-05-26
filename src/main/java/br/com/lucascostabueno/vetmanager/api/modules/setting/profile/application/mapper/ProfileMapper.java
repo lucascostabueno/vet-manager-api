@@ -11,10 +11,10 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
 
-    @Mapping(target = "id", ignore = true)
-    Profile toEntity(ProfileCreateRequest request);
+  @Mapping(target = "id", ignore = true)
+  Profile toEntity(ProfileCreateRequest request);
 
-    ProfileResponse toResponse(Profile entity);
+  ProfileResponse toResponse(Profile entity);
 
-    void updateEntityFromDto(ProfileUpdateRequest dto, @MappingTarget Profile entity);
+  void updateEntityFromDto(ProfileUpdateRequest dto, @MappingTarget Profile entity);
 }

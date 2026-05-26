@@ -8,6 +8,6 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class UserEntity {
-    private final UUID id;
-    private final String username;
+  private final UUID id;
+  private final String username;
 }

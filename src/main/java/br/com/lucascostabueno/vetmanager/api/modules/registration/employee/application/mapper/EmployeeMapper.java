@@ -11,10 +11,10 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {
 
-    @Mapping(target = "id", ignore = true)
-    Employee toEntity(EmployeeCreateRequest request);
+  @Mapping(target = "id", ignore = true)
+  Employee toEntity(EmployeeCreateRequest request);
 
-    EmployeeResponse toResponse(Employee entity);
+  EmployeeResponse toResponse(Employee entity);
 
-    void updateEntityFromDto(EmployeeUpdateRequest dto, @MappingTarget Employee entity);
+  void updateEntityFromDto(EmployeeUpdateRequest dto, @MappingTarget Employee entity);
 }

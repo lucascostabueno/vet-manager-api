@@ -2,8 +2,4 @@ package br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.d
 
 import java.util.UUID;
 
-public record UserSearchFilter(
-        UUID id,
-        String username
-) {
-}
+public record UserSearchFilter(UUID id,String username){}

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmployeeRepositoryImpl implements EmployeeRepositoryCustom {
 
-    @PersistenceContext
-    private final EntityManager entityManager;
+  @PersistenceContext
+  private final EntityManager entityManager;
 
 }

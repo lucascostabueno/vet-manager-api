@@ -10,13 +10,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LoginResponseFactory {
 
-    private final TokenSettings tokenSettings;
+  private final TokenSettings tokenSettings;
 
-    public LoginResponse toLoginResponse(String accessToken, RefreshToken refreshToken) {
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .expiresIn(tokenSettings.getAccessTokenTimeToLive().toSeconds())
-                .build();
-    }
+  public LoginResponse toLoginResponse(String accessToken, RefreshToken refreshToken) {
+    return LoginResponse.builder().accessToken(accessToken).refreshToken(refreshToken.getToken())
+        .expiresIn(tokenSettings.getAccessTokenTimeToLive().toSeconds()).build();
+  }
 }

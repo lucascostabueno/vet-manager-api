@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface ProfileService {
-    ProfileResponse findById(UUID id);
+  ProfileResponse findById(UUID id);
 
-    ProfileResponse create(ProfileCreateRequest request);
+  ProfileResponse create(ProfileCreateRequest request);
 
-    ProfileResponse update(UUID id, ProfileUpdateRequest request);
+  ProfileResponse update(UUID id, ProfileUpdateRequest request);
 
-    Page<ProfileResponse> search(ProfileSearchFilter filter, Pageable pageable);
+  Page<ProfileResponse> search(ProfileSearchFilter filter, Pageable pageable);
 
-    void delete(UUID id);
+  void delete(UUID id);
 }

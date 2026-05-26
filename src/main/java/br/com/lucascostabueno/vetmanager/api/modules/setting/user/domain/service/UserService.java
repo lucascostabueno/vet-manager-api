@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface UserService {
-    UserResponse findById(UUID id);
+  UserResponse findById(UUID id);
 
-    UserResponse create(UserCreateRequest request);
+  UserResponse create(UserCreateRequest request);
 
-    UserResponse update(UUID id, UserUpdateRequest request);
+  UserResponse update(UUID id, UserUpdateRequest request);
 
-    Page<UserResponse> search(UserSearchFilter filter, Pageable pageable);
+  Page<UserResponse> search(UserSearchFilter filter, Pageable pageable);
 
-    void delete(UUID id);
+  void delete(UUID id);
 }

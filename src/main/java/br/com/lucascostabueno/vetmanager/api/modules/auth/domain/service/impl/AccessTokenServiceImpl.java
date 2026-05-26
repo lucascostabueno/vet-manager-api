@@ -15,22 +15,17 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class AccessTokenServiceImpl implements AccessTokenService {
 
-    private final JwtEncoder encoder;
-    private final TokenSettings tokenSettings;
+  private final JwtEncoder encoder;
+  private final TokenSettings tokenSettings;
 
-    @Override
-    public String generateAccessToken(User user) {
-        Instant now = Instant.now();
-        Instant expiresAt = now.plus(tokenSettings.getAccessTokenTimeToLive());
+  @Override
+  public String generateAccessToken(User user) {
+    Instant now = Instant.now();
+    Instant expiresAt = now.plus(tokenSettings.getAccessTokenTimeToLive());
 
-        var claims = JwtClaimsSet.builder()
-                .issuer("vet-manager-api")
-                .issuedAt(now)
-                .expiresAt(expiresAt)
-                .subject(user.getId().toString())
-                .claim("username", user.getUsername())
-                .build();
+    var claims = JwtClaimsSet.builder().issuer("vet-manager-api").issuedAt(now).expiresAt(expiresAt)
+        .subject(user.getId().toString()).claim("username", user.getUsername()).build();
 
-        return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
+    return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+  }
 }

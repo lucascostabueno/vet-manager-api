@@ -8,11 +8,11 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.U
 
 public interface RefreshTokenService {
 
-    RefreshToken createRefreshToken(User user);
+  RefreshToken createRefreshToken(User user);
 
-    LoginResponse refresh(RefreshTokenRequest request);
+  LoginResponse refresh(RefreshTokenRequest request);
 
-    void logout(LogoutRequest request);
+  void logout(LogoutRequest request);
 
-    void revokeAllUserTokens(User user);
+  void revokeAllUserTokens(User user);
 }

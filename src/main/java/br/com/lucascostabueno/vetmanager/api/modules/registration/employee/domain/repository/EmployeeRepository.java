@@ -10,10 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, UUID>, JpaSpecificationExecutor<Employee>, EmployeeRepositoryCustom {
-    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Employee e WHERE e.cpf = :cpf")
-    boolean existsByCpf(@Param("cpf") String cpf);
+public interface EmployeeRepository extends JpaRepository<Employee, UUID>,
+    JpaSpecificationExecutor<Employee>, EmployeeRepositoryCustom {
+  @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Employee e WHERE e.cpf = :cpf")
+  boolean existsByCpf(@Param("cpf") String cpf);
 
-    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Employee e WHERE e.email = :email")
-    boolean existsByEmail(@Param("email") String email);
+  @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Employee e WHERE e.email = :email")
+  boolean existsByEmail(@Param("email") String email);
 }

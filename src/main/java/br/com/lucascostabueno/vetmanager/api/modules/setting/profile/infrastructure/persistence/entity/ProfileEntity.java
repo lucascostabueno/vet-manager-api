@@ -8,6 +8,6 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class ProfileEntity {
-    private final UUID id;
-    private final String name;
+  private final UUID id;
+  private final String name;
 }
