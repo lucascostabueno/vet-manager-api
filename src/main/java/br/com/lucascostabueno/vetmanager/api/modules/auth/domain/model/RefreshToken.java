@@ -2,13 +2,16 @@ package br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model;
 
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "refresh_tokens")
 public class RefreshToken {
