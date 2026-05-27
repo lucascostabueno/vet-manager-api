@@ -9,11 +9,11 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "profiles")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "profiles")
 public class Profile {
 
   @Id

@@ -4,6 +4,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model.Profile;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class ProfileSpecs {
         predicates.add(cb.equal(root.get("id"), filter.id()));
       }
 
-      if (filter.name() != null && !filter.name().isBlank()) {
+      if (StringUtils.hasText(filter.name())) {
         predicates
             .add(cb.like(cb.lower(root.get("name")), "%" + filter.name().toLowerCase() + "%"));
       }
