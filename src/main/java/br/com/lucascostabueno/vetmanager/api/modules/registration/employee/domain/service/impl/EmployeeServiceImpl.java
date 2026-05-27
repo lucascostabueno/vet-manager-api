@@ -53,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     var employee =
         repository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found."));
 
-    mapper.updateEntityFromDto(request, employee);
+    mapper.updateEntity(request, employee);
     return mapper.toResponse(repository.save(employee));
   }
 

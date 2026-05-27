@@ -41,7 +41,7 @@ public class ProfileServiceImpl implements ProfileService {
     var employee =
         repository.findById(id).orElseThrow(() -> new RuntimeException("Profile not found."));
 
-    mapper.updateEntityFromDto(request, employee);
+    mapper.updateEntity(request, employee);
     return mapper.toResponse(repository.save(employee));
   }
 

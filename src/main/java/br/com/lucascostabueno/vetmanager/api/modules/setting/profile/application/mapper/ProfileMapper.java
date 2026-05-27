@@ -16,5 +16,5 @@ public interface ProfileMapper {
 
   ProfileResponse toResponse(Profile entity);
 
-  void updateEntityFromDto(ProfileUpdateRequest dto, @MappingTarget Profile entity);
+  void updateEntity(ProfileUpdateRequest dto, @MappingTarget Profile entity);
 }

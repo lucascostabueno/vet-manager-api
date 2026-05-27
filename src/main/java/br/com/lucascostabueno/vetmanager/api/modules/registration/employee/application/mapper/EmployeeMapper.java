@@ -16,5 +16,5 @@ public interface EmployeeMapper {
 
   EmployeeResponse toResponse(Employee entity);
 
-  void updateEntityFromDto(EmployeeUpdateRequest dto, @MappingTarget Employee entity);
+  void updateEntity(EmployeeUpdateRequest dto, @MappingTarget Employee entity);
 }

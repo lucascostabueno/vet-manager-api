@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     User user =
         userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
 
-    mapper.updateEntityFromDto(request, user);
+    mapper.updateEntity(request, user);
 
     if (request.password() != null && !request.password().isBlank()) {
       String hashedPassword = passwordEncoder.encode(request.password());

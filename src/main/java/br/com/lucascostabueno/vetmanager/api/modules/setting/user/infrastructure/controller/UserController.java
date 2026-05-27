@@ -13,8 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -32,9 +33,11 @@ public class UserController {
 
   @PostMapping
   public ResponseEntity<UserResponse> create(@RequestBody @Valid UserCreateRequest request) {
-    var response = service.create(request);
-    var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+    UserResponse response = service.create(request);
+
+    URI uri = MvcUriComponentsBuilder.fromController(getClass()).path("/{id}")
         .buildAndExpand(response.id()).toUri();
+
     return ResponseEntity.created(uri).body(response);
   }
 
