@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     if (request.password() != null && !request.password().isBlank()) {
       String hashedPassword = passwordEncoder.encode(request.password());
-      user.setPassword(passwordEncoder.encode(hashedPassword));
+      user.setPassword(hashedPassword);
     }
 
     return mapper.toResponse(userRepository.save(user));
