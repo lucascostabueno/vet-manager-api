@@ -2,4 +2,7 @@ package br.com.lucascostabueno.vetmanager.api.modules.setting.profile.applicatio
 
 import jakarta.validation.constraints.NotBlank;
 
-public record ProfileUpdateRequest(@NotBlank String name){}
+import java.util.Set;
+import java.util.UUID;
+
+public record ProfileUpdateRequest(@NotBlank String name,Set<UUID>permissionIds){}

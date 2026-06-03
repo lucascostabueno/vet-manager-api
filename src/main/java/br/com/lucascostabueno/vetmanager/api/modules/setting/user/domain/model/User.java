@@ -1,6 +1,7 @@
 package br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model;
 
 import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseAuditEntity;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +27,8 @@ public class User extends BaseAuditEntity {
 
   @Column(name = "password", nullable = false)
   private String password;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "profile_id", nullable = false)
+  private Profile profile;
 }

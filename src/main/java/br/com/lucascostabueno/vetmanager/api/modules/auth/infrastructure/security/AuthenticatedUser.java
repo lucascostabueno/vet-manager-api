@@ -3,10 +3,11 @@ package br.com.lucascostabueno.vetmanager.api.modules.auth.infrastructure.securi
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class AuthenticatedUser implements UserDetails {
@@ -29,7 +30,9 @@ public class AuthenticatedUser implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    return user.getProfile().getPermissions().stream()
+        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+        .collect(Collectors.toList());
   }
 
   @Override

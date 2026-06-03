@@ -4,6 +4,7 @@ import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.j
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,4 +24,9 @@ public class Profile extends BaseAuditEntity {
 
   @Column(name = "name", nullable = false)
   private String name;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "profile_permissions", joinColumns = @JoinColumn(name = "profile_id"),
+      inverseJoinColumns = @JoinColumn(name = "permission_id"))
+  private Set<Permission> permissions;
 }

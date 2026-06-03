@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
@@ -27,11 +28,13 @@ public class UserController {
   private final UserServiceImpl service;
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('USER_VIEW')")
   public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
     return ResponseEntity.ok(service.findById(id));
   }
 
   @PostMapping
+  @PreAuthorize("hasAuthority('USER_CREATE')")
   public ResponseEntity<UserResponse> create(@RequestBody @Valid UserCreateRequest request) {
     UserResponse response = service.create(request);
 
@@ -42,18 +45,21 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('USER_UPDATE')")
   public ResponseEntity<UserResponse> update(@PathVariable UUID id,
       @RequestBody @Valid UserUpdateRequest request) {
     return ResponseEntity.ok(service.update(id, request));
   }
 
   @GetMapping
+  @PreAuthorize("hasAuthority('USER_VIEW')")
   public ResponseEntity<Page<UserResponse>> search(@ParameterObject UserSearchFilter filter,
       @ParameterObject Pageable pageable) {
     return ResponseEntity.ok(service.search(filter, pageable));
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('USER_DELETE')")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
     service.delete(id);
     return ResponseEntity.noContent().build();

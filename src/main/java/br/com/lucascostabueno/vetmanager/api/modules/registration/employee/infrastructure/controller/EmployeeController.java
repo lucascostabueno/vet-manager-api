@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
@@ -27,11 +28,13 @@ public class EmployeeController {
   private final EmployeeServiceImpl service;
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('EMPLOYEE_VIEW')")
   public ResponseEntity<EmployeeResponse> getById(@PathVariable UUID id) {
     return ResponseEntity.ok(service.findById(id));
   }
 
   @PostMapping
+  @PreAuthorize("hasAuthority('EMPLOYEE_CREATE')")
   public ResponseEntity<EmployeeResponse> create(
       @RequestBody @Valid EmployeeCreateRequest request) {
     EmployeeResponse response = service.create(request);
@@ -43,18 +46,21 @@ public class EmployeeController {
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('EMPLOYEE_UPDATE')")
   public ResponseEntity<EmployeeResponse> update(@PathVariable UUID id,
       @RequestBody @Valid EmployeeUpdateRequest request) {
     return ResponseEntity.ok(service.update(id, request));
   }
 
   @GetMapping
+  @PreAuthorize("hasAuthority('EMPLOYEE_VIEW')")
   public ResponseEntity<Page<EmployeeResponse>> search(@ParameterObject EmployeeSearchFilter filter,
       @ParameterObject Pageable pageable) {
     return ResponseEntity.ok(service.search(filter, pageable));
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('EMPLOYEE_DELETE')")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
     service.delete(id);
     return ResponseEntity.noContent().build();
