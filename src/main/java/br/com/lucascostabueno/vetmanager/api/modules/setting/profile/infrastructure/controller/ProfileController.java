@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
@@ -27,11 +28,13 @@ public class ProfileController {
   private final ProfileServiceImpl service;
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('PROFILE_VIEW')")
   public ResponseEntity<ProfileResponse> getById(@PathVariable UUID id) {
     return ResponseEntity.ok(service.findById(id));
   }
 
   @PostMapping
+  @PreAuthorize("hasAuthority('PROFILE_CREATE')")
   public ResponseEntity<ProfileResponse> create(@RequestBody @Valid ProfileCreateRequest request) {
     ProfileResponse response = service.create(request);
 
@@ -42,18 +45,21 @@ public class ProfileController {
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('PROFILE_UPDATE')")
   public ResponseEntity<ProfileResponse> update(@PathVariable UUID id,
       @RequestBody @Valid ProfileUpdateRequest request) {
     return ResponseEntity.ok(service.update(id, request));
   }
 
   @GetMapping
+  @PreAuthorize("hasAuthority('PROFILE_VIEW')")
   public ResponseEntity<Page<ProfileResponse>> search(@ParameterObject ProfileSearchFilter filter,
       @ParameterObject Pageable pageable) {
     return ResponseEntity.ok(service.search(filter, pageable));
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('PROFILE_DELETE')")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
     service.delete(id);
     return ResponseEntity.noContent().build();

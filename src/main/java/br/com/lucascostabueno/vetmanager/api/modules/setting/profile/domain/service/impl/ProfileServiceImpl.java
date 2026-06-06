@@ -5,7 +5,10 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileSearchFilter;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileUpdateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.mapper.ProfileMapper;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model.Permission;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model.Profile;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.repository.ProfileRepository;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.PermissionService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.ProfileService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.infrastructure.persistence.specification.ProfileSpecs;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,6 +27,7 @@ import java.util.UUID;
 public class ProfileServiceImpl implements ProfileService {
 
   private final ProfileRepository repository;
+  private final PermissionService permissionService;
   private final ProfileMapper mapper;
 
   @Override
@@ -32,17 +39,30 @@ public class ProfileServiceImpl implements ProfileService {
 
   @Transactional
   public ProfileResponse create(ProfileCreateRequest request) {
-    var employee = mapper.toEntity(request);
-    return mapper.toResponse(repository.save(employee));
+    Profile profile = mapper.toEntity(request);
+
+    Optional.ofNullable(request.permissionIds()).filter(ids -> !ids.isEmpty()).ifPresent(ids -> {
+      List<Permission> permissions = permissionService.findAllByIds(ids);
+      profile.setPermissions(new HashSet<>(permissions));
+    });
+
+    return mapper.toResponse(repository.save(profile));
   }
 
   @Transactional
   public ProfileResponse update(UUID id, ProfileUpdateRequest request) {
-    var employee =
+    Profile profile =
         repository.findById(id).orElseThrow(() -> new RuntimeException("Profile not found."));
 
-    mapper.updateEntity(request, employee);
-    return mapper.toResponse(repository.save(employee));
+    mapper.updateEntity(request, profile);
+
+    Optional.ofNullable(request.permissionIds()).filter(ids -> !ids.isEmpty())
+        .ifPresentOrElse(ids -> {
+          List<Permission> permissions = permissionService.findAllByIds(ids);
+          profile.setPermissions(new HashSet<>(permissions));
+        }, () -> profile.getPermissions().clear());
+
+    return mapper.toResponse(repository.save(profile));
   }
 
   @Transactional(readOnly = true)
