@@ -24,7 +24,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     Instant expiresAt = now.plus(tokenSettings.getAccessTokenTimeToLive());
 
     var claims = JwtClaimsSet.builder().issuer("vet-manager-api").issuedAt(now).expiresAt(expiresAt)
-        .subject(user.getId().toString()).claim("username", user.getUsername()).build();
+        .subject(user.getId().toString()).claim("username", user.getUsername())
+        .claim("profile_id", user.getProfile().getId().toString()).build();
 
     return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
   }

@@ -1,5 +1,7 @@
 package br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.service.impl;
 
+import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model.Profile;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.repository.ProfileRepository;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserCreateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserResponse;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.application.dto.UserSearchFilter;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper mapper;
   private final PasswordEncoder passwordEncoder;
+  private final ProfileRepository profileRepository;
 
   @Override
   @Transactional(readOnly = true)
@@ -38,6 +41,13 @@ public class UserServiceImpl implements UserService {
     User user = mapper.toEntity(request);
     String hashedPassword = passwordEncoder.encode(request.password());
     user.setPassword(hashedPassword);
+
+    if (!profileRepository.existsById(request.profile())) {
+      throw new RuntimeException("Profile not found");
+    }
+    Profile profile = profileRepository.getReferenceById(request.profile());
+    user.setProfile(profile);
+
     return mapper.toResponse(userRepository.save(user));
   }
 
@@ -52,6 +62,12 @@ public class UserServiceImpl implements UserService {
       String hashedPassword = passwordEncoder.encode(request.password());
       user.setPassword(hashedPassword);
     }
+
+    if (!profileRepository.existsById(request.profile())) {
+      throw new RuntimeException("Profile not found");
+    }
+    Profile profile = profileRepository.getReferenceById(request.profile());
+    user.setProfile(profile);
 
     return mapper.toResponse(userRepository.save(user));
   }

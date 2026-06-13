@@ -20,7 +20,13 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   @Transactional(readOnly = true)
   public List<Permission> findAllByIds(Set<UUID> ids) {
-    return Optional.ofNullable(ids).filter(set -> !set.isEmpty()).map(repository::findAllById)
+    return Optional.ofNullable(ids).filter(set -> !set.isEmpty()).map(repository::findAllByIds)
         .orElse(List.of());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<String> findNamesByProfileId(UUID profileId) {
+    return Optional.ofNullable(profileId).map(repository::findNamesByProfileId).orElse(List.of());
   }
 }

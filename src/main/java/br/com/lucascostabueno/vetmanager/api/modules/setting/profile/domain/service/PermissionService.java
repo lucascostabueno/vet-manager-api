@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface PermissionService {
   List<Permission> findAllByIds(Set<UUID> ids);
+
+  List<String> findNamesByProfileId(UUID profileId);
 }
