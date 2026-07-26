@@ -12,10 +12,12 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "profile", ignore = true)
   User toEntity(UserCreateRequest request);
 
   UserResponse toResponse(User entity);
 
   @Mapping(target = "password", ignore = true)
+  @Mapping(target = "profile", ignore = true)
   void updateEntity(UserUpdateRequest dto, @MappingTarget User entity);
 }
