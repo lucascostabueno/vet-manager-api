@@ -13,11 +13,15 @@ public interface UserMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "profile", ignore = true)
+  @Mapping(target = "employee", ignore = true)
   User toEntity(UserCreateRequest request);
 
+  @Mapping(target = "employeeId", source = "employee.id")
   UserResponse toResponse(User entity);
 
+  @Mapping(target = "id", ignore = true)
   @Mapping(target = "password", ignore = true)
   @Mapping(target = "profile", ignore = true)
+  @Mapping(target = "employee", ignore = true)
   void updateEntity(UserUpdateRequest dto, @MappingTarget User entity);
 }

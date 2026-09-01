@@ -5,4 +5,4 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record UserUpdateRequest(@NotBlank String username,@NotBlank String password,@NotNull UUID profile){}
+public record UserUpdateRequest(@NotBlank String username,@NotBlank String password,@NotNull UUID profile,@NotNull UUID employeeId){}

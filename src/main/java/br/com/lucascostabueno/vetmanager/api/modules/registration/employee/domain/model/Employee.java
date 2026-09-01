@@ -1,6 +1,7 @@
 package br.com.lucascostabueno.vetmanager.api.modules.registration.employee.domain.model;
 
 import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseFullAuditEntity;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +30,7 @@ public class Employee extends BaseFullAuditEntity {
 
   @Column(name = "email", nullable = false, unique = true)
   private String email;
+
+  @OneToOne(mappedBy = "employee", fetch = FetchType.LAZY)
+  private User user;
 }
