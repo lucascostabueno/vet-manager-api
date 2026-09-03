@@ -1,5 +1,6 @@
 package br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.impl;
 
+import br.com.lucascostabueno.vetmanager.api.config.cache.CacheConstants;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileCreateRequest;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileResponse;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.application.dto.ProfileSearchFilter;
@@ -12,6 +13,9 @@ import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.serv
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.ProfileService;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.infrastructure.persistence.specification.ProfileSpecs;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,11 +36,13 @@ public class ProfileServiceImpl implements ProfileService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = CacheConstants.PROFILES, key = "#id")
   public ProfileResponse findById(UUID id) {
     return repository.findById(id).map(mapper::toResponse)
         .orElseThrow(() -> new RuntimeException("Profile not found."));
   }
 
+  @Override
   @Transactional
   public ProfileResponse create(ProfileCreateRequest request) {
     Profile profile = mapper.toEntity(request);
@@ -49,7 +55,9 @@ public class ProfileServiceImpl implements ProfileService {
     return mapper.toResponse(repository.save(profile));
   }
 
+  @Override
   @Transactional
+  @CachePut(value = CacheConstants.PROFILES, key = "#id")
   public ProfileResponse update(UUID id, ProfileUpdateRequest request) {
     Profile profile =
         repository.findById(id).orElseThrow(() -> new RuntimeException("Profile not found."));
@@ -62,19 +70,28 @@ public class ProfileServiceImpl implements ProfileService {
           profile.setPermissions(new HashSet<>(permissions));
         }, () -> profile.getPermissions().clear());
 
-    return mapper.toResponse(repository.save(profile));
+    ProfileResponse response = mapper.toResponse(repository.save(profile));
+
+    permissionService.evictPermissionsCache(id);
+
+    return response;
   }
 
+  @Override
   @Transactional(readOnly = true)
   public Page<ProfileResponse> search(ProfileSearchFilter filter, Pageable pageable) {
     return repository.findAll(ProfileSpecs.byFilter(filter), pageable).map(mapper::toResponse);
   }
 
+  @Override
   @Transactional
+  @CacheEvict(value = CacheConstants.PROFILES, key = "#id")
   public void delete(UUID id) {
     if (!repository.existsById(id)) {
       throw new RuntimeException("Invalid ID.");
     }
     repository.deleteById(id);
+
+    permissionService.evictPermissionsCache(id);
   }
 }

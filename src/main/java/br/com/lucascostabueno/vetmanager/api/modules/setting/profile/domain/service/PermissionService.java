@@ -10,4 +10,6 @@ public interface PermissionService {
   List<Permission> findAllByIds(Set<UUID> ids);
 
   List<String> findNamesByProfileId(UUID profileId);
+
+  void evictPermissionsCache(UUID profileId);
 }

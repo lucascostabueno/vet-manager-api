@@ -1,9 +1,12 @@
 package br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.impl;
 
+import br.com.lucascostabueno.vetmanager.api.config.cache.CacheConstants;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model.Permission;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.repository.PermissionRepository;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.service.PermissionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +29,13 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = CacheConstants.PERMISSIONS_BY_PROFILE, key = "#profileId",
+      unless = "#result.isEmpty()")
   public List<String> findNamesByProfileId(UUID profileId) {
     return Optional.ofNullable(profileId).map(repository::findNamesByProfileId).orElse(List.of());
   }
+
+  @Override
+  @CacheEvict(value = CacheConstants.PERMISSIONS_BY_PROFILE, key = "#profileId")
+  public void evictPermissionsCache(UUID profileId) {}
 }
