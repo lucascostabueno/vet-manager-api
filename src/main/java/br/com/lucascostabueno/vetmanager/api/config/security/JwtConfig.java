@@ -9,7 +9,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -21,6 +22,8 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class JwtConfig {
@@ -38,7 +41,8 @@ public class JwtConfig {
 
   @Bean
   public JwtEncoder jwtEncoder() {
-    JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
+    JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey)
+        .keyID("vet-manager-key").build();
     JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwks);
   }
@@ -52,6 +56,17 @@ public class JwtConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(10);
+    String encodingId = "argon2";
+    Argon2PasswordEncoder argon2 = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+
+    Map<String, PasswordEncoder> encoders = new HashMap<>();
+    encoders.put(encodingId, argon2);
+
+    DelegatingPasswordEncoder delegatingPasswordEncoder =
+        new DelegatingPasswordEncoder(encodingId, encoders);
+
+    delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(argon2);
+
+    return delegatingPasswordEncoder;
   }
 }
