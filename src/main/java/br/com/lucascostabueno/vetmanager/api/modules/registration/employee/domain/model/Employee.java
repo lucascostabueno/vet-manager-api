@@ -25,10 +25,10 @@ public class Employee extends BaseFullAuditEntity {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "cpf", nullable = false, unique = true, length = 11)
+  @Column(name = "cpf", nullable = false, length = 11)
   private String cpf;
 
-  @Column(name = "email", nullable = false, unique = true)
+  @Column(name = "email", nullable = false)
   private String email;
 
   @OneToOne(mappedBy = "employee", fetch = FetchType.LAZY)

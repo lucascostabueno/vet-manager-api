@@ -18,7 +18,7 @@ import java.util.UUID;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseAuditEntity implements Serializable {
+public abstract class BaseAuditEntity extends BaseTenantEntity implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 1L;

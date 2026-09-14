@@ -5,6 +5,7 @@ import br.com.lucascostabueno.vetmanager.api.common.domain.exception.BusinessExc
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,6 +16,18 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<ProblemDetailResponse> handleBadCredentialsException(
+      BadCredentialsException ex) {
+    log.warn("Authentication failed: {}", ex.getMessage());
+
+    ProblemDetailResponse problem = ProblemDetailResponse.builder().timestamp(OffsetDateTime.now())
+        .status(HttpStatus.UNAUTHORIZED.value()).title(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+        .detail(ex.getMessage()).build();
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
+  }
 
   @ExceptionHandler(BusinessException.class)
   public ResponseEntity<ProblemDetailResponse> handleBusinessException(BusinessException ex) {
