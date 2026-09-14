@@ -1,6 +1,6 @@
 package br.com.lucascostabueno.vetmanager.api.modules.registration.employee.domain.model;
 
-import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseFullAuditEntity;
+import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseTenantFullAuditEntity;
 import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "employees")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Employee extends BaseFullAuditEntity {
+public class Employee extends BaseTenantFullAuditEntity {
 
   @Id
   @EqualsAndHashCode.Include

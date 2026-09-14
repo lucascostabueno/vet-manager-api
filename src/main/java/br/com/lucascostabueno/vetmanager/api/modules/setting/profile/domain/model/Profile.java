@@ -1,6 +1,6 @@
 package br.com.lucascostabueno.vetmanager.api.modules.setting.profile.domain.model;
 
-import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseFullAuditEntity;
+import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseTenantFullAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "profiles")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Profile extends BaseFullAuditEntity {
+public class Profile extends BaseTenantFullAuditEntity {
 
   @Id
   @EqualsAndHashCode.Include
