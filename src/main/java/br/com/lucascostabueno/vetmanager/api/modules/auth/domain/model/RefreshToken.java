@@ -1,6 +1,7 @@
 package br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model;
 
-import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
+import br.com.lucascostabueno.vetmanager.api.common.infrastructure.persistence.jpa.domain.BaseTenantEntity;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.AuthUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Table(name = "refresh_tokens")
-public class RefreshToken {
+public class RefreshToken extends BaseTenantEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,7 +24,7 @@ public class RefreshToken {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  private AuthUser user;
 
   @Column(name = "token", nullable = false, unique = true)
   private String token;
@@ -34,7 +35,7 @@ public class RefreshToken {
   @Column(name = "revoked", nullable = false)
   private Boolean revoked = Boolean.FALSE;
 
-  public RefreshToken(User user, Instant expiresAt) {
+  public RefreshToken(AuthUser user, Instant expiresAt) {
     this.user = user;
     this.token = UUID.randomUUID().toString();
     this.expiresAt = expiresAt;

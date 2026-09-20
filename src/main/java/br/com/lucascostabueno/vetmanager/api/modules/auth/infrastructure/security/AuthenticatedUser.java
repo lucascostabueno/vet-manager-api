@@ -1,6 +1,6 @@
 package br.com.lucascostabueno.vetmanager.api.modules.auth.infrastructure.security;
 
-import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthenticatedUser implements UserDetails {
 
-  private final User user;
+  private final AuthUser user;
 
-  public User getUser() {
+  public AuthUser getUser() {
     return this.user;
   }
 

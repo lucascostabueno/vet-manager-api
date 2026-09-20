@@ -1,7 +1,7 @@
 package br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.impl;
 
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.AccessTokenService;
-import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -19,12 +19,13 @@ public class AccessTokenServiceImpl implements AccessTokenService {
   private final TokenSettings tokenSettings;
 
   @Override
-  public String generateAccessToken(User user) {
+  public String generateAccessToken(AuthUser user) {
     Instant now = Instant.now();
     Instant expiresAt = now.plus(tokenSettings.getAccessTokenTimeToLive());
 
-    var claims = JwtClaimsSet.builder().issuer("vet-manager-api").issuedAt(now).expiresAt(expiresAt)
-        .subject(user.getId().toString()).claim("username", user.getUsername())
+    JwtClaimsSet claims = JwtClaimsSet.builder().issuer("vet-manager-api").issuedAt(now)
+        .expiresAt(expiresAt).subject(user.getId().toString()).claim("username", user.getUsername())
+        .claim("tenant_id", user.getTenantId())
         .claim("profile_id", user.getProfile().getId().toString()).build();
 
     return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

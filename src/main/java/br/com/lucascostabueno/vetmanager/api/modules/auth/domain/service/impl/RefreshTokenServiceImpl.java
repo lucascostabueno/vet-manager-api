@@ -8,7 +8,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshTo
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.repository.RefreshTokenRepository;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.AccessTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
-import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,7 +33,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   private final LoginResponseFactory loginResponseFactory;
 
   @Override
-  public RefreshToken createRefreshToken(User user) {
+  public RefreshToken createRefreshToken(AuthUser user) {
     Instant expiresAt = Instant.now().plus(tokenSettings.getRefreshTokenTimeToLive());
     RefreshToken refreshToken = new RefreshToken(user, expiresAt);
     return refreshTokenRepository.save(refreshToken);
@@ -67,7 +67,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   }
 
   @Override
-  public void revokeAllUserTokens(User user) {
+  public void revokeAllUserTokens(AuthUser user) {
     List<RefreshToken> activeTokens = refreshTokenRepository.findAllByUserAndRevokedFalse(user);
     activeTokens.forEach(RefreshToken::revoke);
   }

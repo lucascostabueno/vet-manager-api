@@ -7,7 +7,7 @@ import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshTo
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.AccessTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.service.RefreshTokenService;
 import br.com.lucascostabueno.vetmanager.api.modules.auth.infrastructure.security.AuthenticatedUser;
-import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +26,7 @@ public class AuthenticateUserUseCase {
   @Transactional
   public LoginResponse authenticate(LoginRequest request) {
     Authentication authentication = authenticateCredentials(request);
-    User user = extractAuthenticatedUser(authentication);
+    AuthUser user = extractAuthenticatedUser(authentication);
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
     String accessToken = accessTokenService.generateAccessToken(user);
 
@@ -40,7 +40,7 @@ public class AuthenticateUserUseCase {
     return authenticationManager.authenticate(authToken);
   }
 
-  private User extractAuthenticatedUser(Authentication authentication) {
+  private AuthUser extractAuthenticatedUser(Authentication authentication) {
     AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
 
     return authenticatedUser.getUser();

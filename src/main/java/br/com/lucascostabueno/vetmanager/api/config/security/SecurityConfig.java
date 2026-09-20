@@ -1,5 +1,6 @@
 package br.com.lucascostabueno.vetmanager.api.config.security;
 
+import br.com.lucascostabueno.vetmanager.api.common.infrastructure.multitenancy.TenantInterceptorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -16,7 +18,8 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
-      CustomJwtAuthenticationConverter converter) throws Exception {
+      CustomJwtAuthenticationConverter converter, TenantInterceptorFilter tenantFilter)
+      throws Exception {
     http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/v1/auth/login")
         .permitAll().requestMatchers("/api/v1/auth/refresh").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll().requestMatchers("/v3/api-docs/**")
@@ -24,7 +27,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .oauth2ResourceServer(
             oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(converter)))
-        .sessionManagement(
+        .addFilterAfter(tenantFilter, BearerTokenAuthenticationFilter.class).sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return http.build();
   }

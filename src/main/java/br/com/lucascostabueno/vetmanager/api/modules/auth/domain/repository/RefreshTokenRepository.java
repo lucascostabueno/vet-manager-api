@@ -1,7 +1,7 @@
 package br.com.lucascostabueno.vetmanager.api.modules.auth.domain.repository;
 
 import br.com.lucascostabueno.vetmanager.api.modules.auth.domain.model.RefreshToken;
-import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.User;
+import br.com.lucascostabueno.vetmanager.api.modules.setting.user.domain.model.AuthUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +17,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
   Optional<RefreshToken> findByToken(@Param("token") String token);
 
   @Query("SELECT r FROM RefreshToken r WHERE r.user = :user AND r.revoked = false")
-  List<RefreshToken> findAllByUserAndRevokedFalse(@Param("user") User user);
+  List<RefreshToken> findAllByUserAndRevokedFalse(@Param("user") AuthUser user);
 
   @Modifying
   @Query("DELETE FROM RefreshToken r WHERE r.expiresAt < :now OR r.revoked = true")
